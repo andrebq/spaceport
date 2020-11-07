@@ -13,12 +13,12 @@ func _process(_delta):
 func _unhandled_input(event:InputEvent):
 	if event.is_action("UnitSelection"):
 		var click_point = get_viewport_transform().xform_inv(event.position)
-		print(event.position, click_point)
 		var space = get_world_2d().direct_space_state
 		var units = space.intersect_point(click_point, 1)
 		if units:
-			var unit = units[0].collider
-			change_selection(unit.owner)
+			var unit = units[0].collider.owner
+			if unit.has_signal("unit_selected"):
+				change_selection(unit)
 	elif event.is_action("DeselectUnit"):
 		print("here")
 		change_selection(null)
