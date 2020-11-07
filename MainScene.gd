@@ -11,15 +11,19 @@ func _process(_delta):
 		$Camera2D.position = selected_unit.position
 
 func _unhandled_input(event:InputEvent):
-	if event.is_action("UnitSelection"):
+	if event.is_action("Click"):
 		var click_point = get_viewport_transform().xform_inv(event.position)
 		var space = get_world_2d().direct_space_state
 		var units = space.intersect_point(click_point, 1)
 		if units:
-			var unit = units[0].collider.owner
+			var unit = units[0].collider
 			if unit.has_signal("unit_selected"):
 				change_selection(unit)
-	elif event.is_action("DeselectUnit"):
+		elif selected_unit:
+			# somehting is selected but we did not click
+			# on other units
+			selected_unit.destination = click_point
+	elif event.is_action("RClick"):
 		print("here")
 		change_selection(null)
 
