@@ -24,13 +24,27 @@ func _unhandled_input(event:InputEvent):
 			# on other units
 			selected_unit.destination = click_point
 	elif event.is_action("RClick"):
-		print("here")
 		change_selection(null)
 
 func change_selection(new_unit):
 	if selected_unit and new_unit != selected_unit:
-		print("changed")
 		selected_unit.selected = false
 	selected_unit = new_unit
 	if new_unit:
 		new_unit.selected = true
+
+
+func _on_SmallAsteroidMiner_autopilot_enabled(unit, global_destination) -> void:
+	if selected_unit != unit:
+		pass
+	$DestinationPath.global_position = selected_unit.global_position
+	var endPosition = global_destination - $DestinationPath.global_position
+	$DestinationPath.points = [Vector2(0, 0), endPosition]
+	$DestinationPath.visible = true
+	print($DestinationPath.global_position, global_destination, $DestinationPath.points)
+
+
+func _on_SmallAsteroidMiner_autopilot_disabled(unit, global_destination) -> void:
+	if selected_unit != unit:
+		pass
+	$DestinationPath.visible = false

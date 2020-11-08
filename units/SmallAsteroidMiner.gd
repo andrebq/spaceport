@@ -3,16 +3,30 @@ extends KinematicBody2D
 signal unit_selected(unit)
 signal unit_deselected(unit)
 
+signal autopilot_enabled(unit,global_destination)
+signal autopilot_disabled(unit,global_destination)
+
 var selected:bool = false setget _set_selected
 var show_health:bool = false setget _set_show_health
-var start_driving:bool = false
+var start_driving:bool = false setget _set_start_driving
 onready var destination:Vector2 = self.global_position setget _set_destination
+
+func _set_start_driving(value):
+	print("start driving: ", value)
+	if start_driving == value:
+		return
+	
+	start_driving = value
+	if start_driving:
+		emit_signal("autopilot_enabled", self, destination)
+	else:
+		emit_signal("autopilot_disabled", self, destination)
 
 func _set_destination(value):
 	if value == self.global_position:
 		return
 	destination = value
-	start_driving = true
+	self.start_driving = true
 
 func _set_show_health(value):
 	show_health = value
@@ -39,9 +53,8 @@ func _physics_process(delta):
 	if start_driving:
 		var direction = self.global_position.direction_to(destination)
 		var collision = move_and_collide(direction * 100 * delta)
-		print(self.destination.distance_squared_to(self.global_position))
 		if collision:
-			start_driving = false
+			self.start_driving = false
 			# handle collision later
 		elif self.destination.distance_squared_to(self.global_position) <= 10:
-			start_driving = false
+			self.start_driving = false

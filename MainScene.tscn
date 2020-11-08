@@ -18,3 +18,9 @@ position = Vector2( -448, -256 )
 
 [node name="MetalRichAsteroid" parent="." instance=ExtResource( 4 )]
 position = Vector2( -416, -160 )
+
+[node name="DestinationPath" type="Line2D" parent="."]
+visible = false
+width = 100.0
+[connection signal="autopilot_disabled" from="SmallAsteroidMiner" to="." method="_on_SmallAsteroidMiner_autopilot_disabled"]
+[connection signal="autopilot_enabled" from="SmallAsteroidMiner" to="." method="_on_SmallAsteroidMiner_autopilot_enabled"]
